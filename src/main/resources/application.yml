@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: quote-aggregator
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  mvc:
+    async:
+      request-timeout: 5s
+
+server:
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 200
+    accept-count: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [%X{requestId:-}]"
+
+app:
+  concurrency:
+    io-pool:
+      core-size: 28
+      max-size: 28
+      queue-capacity: 0
+      keep-alive: 60s
+      shutdown-wait: 20s
+    quote:
+      call-timeout: 800ms
+      total-timeout: 2s
+    bulkheads:
+      price: 12
+      stock: 8
+      shipping: 8
+
+  simulated-downstream:
+    price-latency: 80ms
+    stock-latency: 60ms
+    shipping-latency: 100ms
+    slow-latency: 5s
